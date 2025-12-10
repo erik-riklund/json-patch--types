@@ -1,6 +1,15 @@
+//
+// JavaScript Object Notation (JSON) Patch
+// Copyright (c) 2013 IETF Trust and the persons identified as the
+// document authors.  All rights reserved.
+//
+// https://datatracker.ietf.org/doc/html/rfc6902
+//
+
 /**
- * Represents a single JSON Patch operation
- * (see {@link https://datatracker.ietf.org/doc/html/rfc6902#section-4|RFC 6902}).
+ * Represents a single JSON Patch operation.
+ *
+ * @see https://datatracker.ietf.org/doc/html/rfc6902#section-4
  */
 export type Patch =
   | AddOperation
@@ -11,16 +20,22 @@ export type Patch =
   | TestOperation;
 
 /**
- * Defines the common structure for all JSON Patch operations (RFC 6902).
- * The 'op' field specifies the type of operation, and 'path' indicates the target location.
+ * Defines the common structure for all JSON Patch operations.
+ *
+ * The `op` field specifies the type of operation, and `path` indicates the target location
+ * ({@link https://datatracker.ietf.org/doc/html/rfc6901#section-3|JSON Pointer}).
  */
-type Operation<
+interface Operation<
   T extends "add" | "remove" | "replace" | "move" | "copy" | "test",
-> = { op: T; path: `/${string}` };
+> {
+  op: T;
+  path: `/${string}`;
+}
 
 /**
- * The "add" operation performs one of the following functions,
- * depending upon what the target location references:
+ * The "add" operation adds a new property to an object or a new element to an array.
+ *
+ * It performs one of the following functions, depending upon what the target location references:
  *
  * - If the target location specifies an array index,
  *   a new value is inserted into the array at the specified index.
@@ -67,10 +82,12 @@ type Operation<
  *
  * It is an error in the document `{ "q": { "bar": 2 } }` because "a" does not exist.
  */
-export type AddOperation = Operation<"add"> & { value: unknown };
+export interface AddOperation extends Operation<"add"> {
+  value: unknown;
+}
 
 /**
- * The `remove` operation removes the value at the target location.
+ * The "remove" operation removes the value at the target location.
  *
  * `{ "op": "remove", "path": "/a/b/c" }`
  *
@@ -79,12 +96,12 @@ export type AddOperation = Operation<"add"> & { value: unknown };
  * If removing an element from an array, any elements above the specified
  * index are shifted one position to the left.
  */
-export type RemoveOperation = Operation<"remove">;
+export interface RemoveOperation extends Operation<"remove"> {}
 
 /**
- * The "replace" operation replaces the value at the target location
- * with a new value. The operation object MUST contain a "value" member
- * whose content specifies the replacement value.
+ * The "replace" operation replaces the value at the target location with a new value.
+ *
+ * The operation object MUST contain a "value" member whose content specifies the replacement value.
  *
  * `{ "op": "replace", "path": "/a/b/c", "value": "foo" }`
  *
@@ -93,7 +110,9 @@ export type RemoveOperation = Operation<"remove">;
  * This operation is functionally identical to a "remove" operation for a value,
  * followed immediately by an "add" operation at the same location with the replacement value.
  */
-export type ReplaceOperation = Operation<"replace"> & { value: unknown };
+export interface ReplaceOperation extends Operation<"replace"> {
+  value: unknown;
+}
 
 /**
  * The "move" operation removes the value at a specified location and
@@ -114,11 +133,12 @@ export type ReplaceOperation = Operation<"replace"> & { value: unknown };
  * The "from" location MUST NOT be a proper prefix of the "path" location;
  * i.e., a location cannot be moved into one of its children.
  */
-export type MoveOperation = Operation<"move"> & { from: `/${string}` };
+export interface MoveOperation extends Operation<"move"> {
+  from: `/${string}`;
+}
 
 /**
- * The "copy" operation copies the value at a specified location to the
- * target location.
+ * The "copy" operation copies the value at a specified location to the target location.
  *
  * `{ "op": "copy", "from": "/a/b/c", "path": "/a/b/e" }`
  *
@@ -131,7 +151,9 @@ export type MoveOperation = Operation<"move"> & { from: `/${string}` };
  * This operation is functionally identical to an "add" operation at the
  * target location using the value specified in the "from" member.
  */
-export type CopyOperation = Operation<"copy"> & { from: `/${string}` };
+export interface CopyOperation extends Operation<"copy"> {
+  from: `/${string}`;
+}
 
 /**
  * The "test" operation tests that a value at the target location is
@@ -169,4 +191,6 @@ export type CopyOperation = Operation<"copy"> & { from: `/${string}` };
  *
  * Also, note that ordering of the serialization of object members is not significant.
  */
-export type TestOperation = Operation<"test"> & { value: unknown };
+export interface TestOperation extends Operation<"test"> {
+  value: unknown;
+}

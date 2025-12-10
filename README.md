@@ -1,36 +1,16 @@
-## JSON Patch types 🧩
+# What is JSON Patch? 🧩
 
-This library provides TypeScript type definitions for **JSON Patch operations** as defined in [RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902).
+JavaScript Object Notation (JSON) Patch ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902)):
 
----
-
-### What is JSON Patch?
-
-JSON Patch is a standard format that defines a set of operations to apply changes to a JSON document. It's useful for sending only the necessary modifications to a server, rather than the entire document.
-
----
-
-### The Types
-
-The core of this library is the definition of the base JSON Patch operation interface and its specific types.
-
-- The base type is `Operation` which all specific operations implement.
-- A JSON Patch document is an array of operations.
-
-The operations are defined as follows:
-
-| Operation Type | Description                                                             | Required fields       | Example                                                  |
-| :------------- | :---------------------------------------------------------------------- | :-------------------- | :------------------------------------------------------- |
-| **`add`**      | Adds a value to an object or inserts an element into an array.          | `op`, `path`, `value` | `{"op": "add", "path": "/a/1", "value": {"foo": "bar"}}` |
-| **`remove`**   | Removes an object member or array element.                              | `op`, `path`          | `{"op": "remove", "path": "/a/1"}`                       |
-| **`replace`**  | Replaces the value of an object member or array element.                | `op`, `path`, `value` | `{"op": "replace", "path": "/a/0/foo", "value": "baz"}`  |
-| **`move`**     | Moves a value from one location to another within the document.         | `op`, `from`, `path`  | `{"op": "move", "from": "/a/1", "path": "/b/0"}`         |
-| **`copy`**     | Copies a value from one location to another within the document.        | `op`, `from`, `path`  | `{"op": "copy", "from": "/a/0", "path": "/b/0"}`         |
-| **`test`**     | Tests that the value at a specified location is equal to a given value. | `op`, `path`, `value` | `{"op": "test", "path": "/a/0/name", "value": "bar"}`    |
+> "JSON Patch defines a JSON document structure for expressing a
+> sequence of operations to apply to a JavaScript Object Notation
+> (JSON) document; it is suitable for use with the HTTP PATCH method.
+> The "application/json-patch+json" media type is used to identify such
+> patch documents."`
 
 ---
 
-### Usage
+## Usage
 
 Import the specific operation type(s) or the `Patch` union type:
 
@@ -58,3 +38,83 @@ const addOp: AddOperation = {
   value: "dark",
 };
 ```
+
+---
+
+## Types
+
+The core of this library is the definition of the base JSON Patch operation interface and its specific types.
+
+### `Operation`
+
+```typescript
+interface Operation<
+  T extends "add" | "remove" | "replace" | "move" | "copy" | "test",
+> {
+  op: T;
+  path: `/${string}`;
+}
+```
+
+Defines the common structure for all JSON Patch operations.
+
+- `op` specifies the type of operation.
+- `path` indicates the target location ([JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901#section-3)).
+
+### `AddOperation`
+
+```typescript
+interface AddOperation extends Operation<"add"> {
+  value: unknown;
+}
+```
+
+Adds a new property to an object or a new element to an array.
+
+### `ReplaceOperation`
+
+```typescript
+interface ReplaceOperation extends Operation<"replace"> {
+  value: unknown;
+}
+```
+
+Replaces the value at the target location with a new value.
+
+### `RemoveOperation`
+
+```typescript
+interface RemoveOperation extends Operation<"remove"> {}
+```
+
+Removes the value at the target location.
+
+### `MoveOperation`
+
+```typescript
+export interface MoveOperation extends Operation<"move"> {
+  from: `/${string}`;
+}
+```
+
+Removes the value at a specified location and adds it to the target location.
+
+### `CopyOperation`
+
+```typescript
+interface CopyOperation extends Operation<"copy"> {
+  from: `/${string}`;
+}
+```
+
+Copies the value at a specified location to the target location.
+
+### `TestOperation`
+
+```typescript
+interface TestOperation extends Operation<"test"> {
+  value: unknown;
+}
+```
+
+Tests that a value at the target location is equal to a specified value.
