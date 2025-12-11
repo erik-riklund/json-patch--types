@@ -2,21 +2,22 @@
 
 JavaScript Object Notation (JSON) Patch ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902)):
 
-> "JSON Patch defines a JSON document structure for expressing a
+> _"JSON Patch defines a JSON document structure for expressing a
 > sequence of operations to apply to a JavaScript Object Notation
 > (JSON) document; it is suitable for use with the HTTP PATCH method.
 > The "application/json-patch+json" media type is used to identify such
-> patch documents."`
+> patch documents."_
 
 ---
 
 ## Usage
 
-Import the specific operation type(s) or the `Patch` union type:
+Import the `PatchDocument` type, the `Patch` union type or any of the specific operation type(s):
 
 ```typescript
 import type {
   Patch,
+  PatchDocument,
   AddOperation,
   RemoveOperation,
   ReplaceOperation,
@@ -25,13 +26,13 @@ import type {
   TestOperation,
 } from "@json-patch/types";
 
-// Example 1: Defining a full Patch document
-const patchDocument: Array<Patch> = [
+// Example 1: Defining a full JSON Patch document
+const patchDocument: PatchDocument = [
   { op: "replace", path: "/name", value: "Example 1" },
   { op: "add", path: "/tags/-", value: "beta" }, // '-' appends to an array
 ];
 
-// Example 2: Using a specific operation type
+// Example 2: Using a specific operation type ("add")
 const addOp: AddOperation = {
   op: "add",
   path: "/settings/theme",
