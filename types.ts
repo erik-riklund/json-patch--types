@@ -1,7 +1,7 @@
 //
 // JavaScript Object Notation (JSON) Patch
-// Copyright (c) 2013 IETF Trust and the persons identified as the
-// document authors.  All rights reserved.
+// Copyright (c) 2013 IETF Trust and the persons identified
+// as the document authors.  All rights reserved.
 //
 // https://datatracker.ietf.org/doc/html/rfc6902
 //
@@ -20,12 +20,46 @@ export type Patch =
   | TestOperation;
 
 /**
+ * A JSON Patch document is a JSON [[RFC 4627](https://datatracker.ietf.org/doc/html/rfc4627)]
+ * document that represents an array of objects. Each object represents a single operation to be
+ * applied to the target JSON document.
+ *
+ * The following is an example JSON Patch document,
+ * transferred in an HTTP PATCH request:
+ *
+ * ```
+ * PATCH /my/data HTTP/1.1
+ * Host: example.org
+ * Content-Length: 326
+ * Content-Type: application/json-patch+json
+ * If-Match: "abc123"
+ * ```
+ *
+ * ```json
+ * [
+ *   { "op": "test", "path": "/a/b/c", "value": "foo" },
+ *   { "op": "remove", "path": "/a/b/c" },
+ *   { "op": "add", "path": "/a/b/c", "value": [ "foo", "bar" ] },
+ *   { "op": "replace", "path": "/a/b/c", "value": 42 },
+ *   { "op": "move", "from": "/a/b/c", "path": "/a/b/d" },
+ *   { "op": "copy", "from": "/a/b/d", "path": "/a/b/e" }
+ * ]
+ * ```
+ *
+ * Operations are applied sequentially in the order they appear in the array.
+ * Each operation in the sequence is applied to the target document; the resulting
+ * document becomes the target of the next operation. Evaluation continues until all
+ * operations are successfully applied or until an error condition is encountered.
+ */
+export type PatchDocument = Array<Patch>;
+
+/**
  * Defines the common structure for all JSON Patch operations.
  *
  * The `op` field specifies the type of operation, and `path` indicates the target location
  * ({@link https://datatracker.ietf.org/doc/html/rfc6901#section-3|JSON Pointer}).
  */
-interface Operation<
+export interface Operation<
   T extends "add" | "remove" | "replace" | "move" | "copy" | "test",
 > {
   op: T;
