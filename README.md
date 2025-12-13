@@ -1,6 +1,6 @@
-# What is JSON Patch? 🧩
+# JavaScript Object Notation (JSON) Patch 🧩
 
-JavaScript Object Notation (JSON) Patch ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902)):
+https://datatracker.ietf.org/doc/html/rfc6902
 
 > _"JSON Patch defines a JSON document structure for expressing a
 > sequence of operations to apply to a JavaScript Object Notation
@@ -12,7 +12,7 @@ JavaScript Object Notation (JSON) Patch ([RFC 6902](https://datatracker.ietf.org
 
 ## Usage
 
-Import the `PatchDocument` type, the `Patch` union type or any of the specific operation type(s):
+Import the `PatchDocument` type, the `Patch` union type, or any of the specific operation types:
 
 ```typescript
 import type {
@@ -28,11 +28,19 @@ import type {
 
 // Example 1: Defining a full JSON Patch document
 const patchDocument: PatchDocument = [
-  { op: "replace", path: "/name", value: "Example 1" },
-  { op: "add", path: "/tags/-", value: "beta" }, // '-' appends to an array
+  {
+    op: "replace",
+    path: "/name",
+    value: "Example 1",
+  },
+  {
+    op: "add",
+    path: "/tags/-", // '-' appends to an array.
+    value: "beta",
+  },
 ];
 
-// Example 2: Using a specific operation type ("add")
+// Example 2: Using a specific operation type
 const addOp: AddOperation = {
   op: "add",
   path: "/settings/theme",
