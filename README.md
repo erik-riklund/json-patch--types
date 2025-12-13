@@ -1,4 +1,4 @@
-# JavaScript Object Notation (JSON) Patch 🧩
+# JavaScript Object Notation (JSON) Patch types 🧩
 
 https://datatracker.ietf.org/doc/html/rfc6902
 
